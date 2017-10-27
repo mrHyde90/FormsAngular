@@ -1,0 +1,104 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+    <!-- ponerlo aqui porque no lo pongas en el submit button porque el default es enviarlo a un server -->
+    <!-- utiliza una local reference f y la pasa -->
+    <!-- angular crea un objeto ngForm el cual contiene los valores del formulario 
+      El objeto tiene varias variables: dirty, enabled, disabled, errors, etc.
+
+      -email es creado por angular para asegurarse que es un email valido, que tenga buen formato
+      -checate el valid en tu objeto NgForm
+      -Angular dinamicamente agrega clases para darnos informacion acerca de los controles
+      -Mira el uso de la f para desabilitar el button si no es valido
+
+      -checa la referencia abajo en el email, el ngModel agrega mas datos al ngForm, como los datos del control Model, entonces tenemos una referencia al email controller
+      -checa como es usado el ngModel, no es two-way-binding
+      -cuadno lo sube hace un snapshot de los valores que puso el usuario
+
+      -#userData, crea una referencia local para tener acceso al ngModelGroup, el objeto que contiene 
+      el grupo
+      -El ngModelGroup crea un grupo como el ngForm ,es decir contiene las clases valid, touched
+    -->
+      <form (ngSubmit)="onSubmit()" #f="ngForm">
+        <div 
+        id="user-data" 
+        ngModelGroup="userData"
+        #userData="ngModelGroup"
+        >
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              class="form-control"
+              ngModel
+              name="username"
+              required 
+              >
+          </div>
+          <button class="btn btn-default" type="button" (click)="suggestUserName()">Suggest an Username</button>
+          <div class="form-group">
+            <label for="email">Mail</label>
+            <input 
+              type="email" 
+              id="email" 
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #email="ngModel"
+            >
+          </div>
+          <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+        </div>
+        <p *ngIf="!userData.valid && userData.touched">User data is invalid!</p>
+        <div class="form-group">
+          <label for="secret">Secret Questions</label>
+          <select 
+            id="secret" 
+            class="form-control"
+            [ngModel] = "defaultQuestion"
+            name="secret">
+            <option value="pet">Your first Pet?</option>
+            <option value="teacher">Your first teacher?</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="questionAnswer" 
+          rows="3" 
+          class="form-control"
+          [(ngModel)]="answer"></textarea>
+        </div>
+        <p>Your reply: {{answer}}</p>
+        <div class="radio" *ngFor="let gender of genders">
+          <label for="">
+            <input 
+            type="radio"
+            name="gender"
+            ngModel
+            [value]="gender"
+            required 
+            >
+            {{gender}}
+          </label>
+        </div>
+        <button 
+          class="btn btn-primary" 
+          type="submit"
+          [disabled]="!f.valid">Submit</button>
+      </form>
+    </div>
+  </div>
+  <hr>
+  <div class="row" *ngIf="submitted">
+    <div class="col-xs-12">
+      <h3>Your data</h3>
+      <p>Username: {{user.username}}</p>
+      <p>Mail: {{user.email}}</p>
+      <p>Secret Question: Your first {{user.secretQuestion}}</p>
+      <p>Answer: {{user.answer}}</p>
+      <p>Gender: {{user.gender}}</p>
+    </div>
+  </div>
+</div>
